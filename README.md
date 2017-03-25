@@ -1,4 +1,4 @@
-# Grender [![GoDoc](http://godoc.org/github.com/dannyvankooten/grender?status.svg)](http://godoc.org/github.com/dannyvankooten/grender)
+# Grender [![GoDoc](http://godoc.org/github.com/dannyvankooten/grender?status.svg)](http://godoc.org/github.com/dannyvankooten/grender)  [![Build Status](https://travis-ci.org/dannyvankooten/grender.svg)](https://travis-ci.org/dannyvankooten/grender)
 
 Grender is a package that provides functionality for easily rendering HTML templates and JSON or XML data to a HTTP response. It is based on [github.com/unrolled/render](https://github.com/unrolled/render) with some subtle modifications when it comes to rendering HTML templates.
 

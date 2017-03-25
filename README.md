@@ -6,17 +6,59 @@ Grender is a package that provides functionality for easily rendering HTML templ
 - Configure template files using a glob string: `templates/*.tmpl`
 - Support for partials as normal templates: `{{ template "footer" .}}`
 
-_// child.tmpl_
-```html
-{{/* extends "master.tmpl" */}}
+## Usage
+Grender can be used with pretty much any web framework providing you can access the `http.ResponseWriter` from your handler. The rendering functions simply wraps Go's existing functionality for marshaling and rendering data.
 
-{{define "content"}}Hello world!{{end}}
+- HTML: Uses the [html/template](http://golang.org/pkg/html/template/) package to render HTML templates.
+- JSON: Uses the [encoding/json](http://golang.org/pkg/encoding/json/) package to marshal data into a JSON-encoded response.
+
+```go
+// main.go
+package main
+
+import (
+    "net/http"
+    "github.com/dannyvankooten/grender"  
+)
+
+func main() {
+    r := grender.New(grender.Options{
+        Charset: "ISO-8859-1",
+        TemplatesGlob: "examples/*.tmpl",
+    })
+    mux := http.NewServeMux()
+
+    // This will set the Content-Type header to "application/json; charset=ISO-8859-1".
+    mux.HandleFunc("/json", func(w http.ResponseWriter, req *http.Request) {
+        r.JSON(w, http.StatusOK, map[string]string{"hello": "world"})
+    })
+
+    // This will set the Content-Type header to "text/html; charset=ISO-8859-1".
+    mux.HandleFunc("/html", func(w http.ResponseWriter, req *http.Request) {
+        r.HTML(w, http.StatusOK, "hello.tmpl", "world")
+    })
+
+    http.ListenAndServe("127.0.0.1:3000", mux)
+}
 ```
 
-_// master.tmpl_
-```html
-{{template "content" .}} from the master template.
+### Options
+
+Grender comes with a variety of configuration options. The defaults are listed below.
+
+```go
+r := grender.New(grender.Options{
+    Debug: false,
+    TemplatesGlob: "templates/*.tmpl",
+    PartialsGlob: "templates/partials/*.tmpl",
+    Funcs: nil,
+    Charset: "UTF-8",
+})
 ```
+
+### More examples
+
+The [grender_test.go](grender_test.go) file contains additional usage examples.
 
 ### License
 

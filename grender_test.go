@@ -59,7 +59,7 @@ func TestRendererHTML(t *testing.T) {
 
 	var err error
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err = render.HTML(w, http.StatusOK, "basic.tmpl", nil)
+		err = render.HTML(w, http.StatusOK, "hello.tmpl", "world")
 	})
 
 	res := httptest.NewRecorder()

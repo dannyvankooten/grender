@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 type Greeting struct {
@@ -12,7 +13,7 @@ type Greeting struct {
 	Two string `json:"two"`
 }
 
-func TestRendererDefaultCharset(t *testing.T) {
+func TestGrenderDefaultCharset(t *testing.T) {
 	r := New(Options{})
 
 	if r.options.Charset != DefaultCharset {
@@ -20,7 +21,7 @@ func TestRendererDefaultCharset(t *testing.T) {
 	}
 }
 
-func TestRendererJSON(t *testing.T) {
+func TestGrenderJSON(t *testing.T) {
 	render := New(Options{
 		Charset: "ASCII",
 	})
@@ -48,7 +49,7 @@ func TestRendererJSON(t *testing.T) {
 	}
 }
 
-func TestRendererHTML(t *testing.T) {
+func TestGrenderHTML(t *testing.T) {
 	render := New(Options{
 		TemplatesGlob: "examples/*.tmpl",
 	})
@@ -72,6 +73,73 @@ func TestRendererHTML(t *testing.T) {
 	body, _ := ioutil.ReadAll(res.Body)
 	if v := string(body); v != "Hello world!\n" {
 		t.Errorf("invalid body: expected %#v, got %#v", "Hello world!\n", v)
+	}
+}
+
+func TestGrenderXML(t *testing.T) {
+	render := New()
+
+	w := httptest.NewRecorder()
+	err := render.XML(w, 299, Greeting{"hello", "world"})
+	res := w.Result()
+
+	if err != nil {
+		t.Errorf("expected %#v, got %#v", nil, err)
+	}
+
+	if res.StatusCode != 299 {
+		t.Errorf("invalid status code: expected %#v, got %#v", 299, res.StatusCode)
+	}
+
+	e := ContentXML + "; charset=" + render.options.Charset
+	if v := res.Header.Get(ContentType); v != e {
+		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
+	}
+
+	body, _ := ioutil.ReadAll(res.Body)
+	expected := "<Greeting><One>hello</One><Two>world</Two></Greeting>"
+	if v := string(body); v != expected {
+		t.Errorf("invalid response body: expected %#v, got %#v", expected, v)
+	}
+}
+
+func TestGrenderText(t *testing.T) {
+	render := New()
+
+	w := httptest.NewRecorder()
+	err := render.Text(w, 200, "Hello world!")
+	res := w.Result()
+
+	if err != nil {
+		t.Errorf("expected %#v, got %#v", nil, err)
+	}
+
+	if res.StatusCode != 200 {
+		t.Errorf("invalid status code: expected %#v, got %#v", 200, res.StatusCode)
+	}
+
+	e := ContentText + "; charset=" + render.options.Charset
+	if v := res.Header.Get(ContentType); v != e {
+		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
+	}
+
+	body, _ := ioutil.ReadAll(res.Body)
+	expected := "Hello world!"
+	if v := string(body); v != expected {
+		t.Errorf("invalid response body: expected %#v, got %#v", expected, v)
+	}
+}
+
+func TestUnexistingTemplate(t *testing.T) {
+	var err error
+	render := New(Options{
+		TemplatesGlob: "examples/*.tmpl",
+	})
+
+	w := httptest.NewRecorder()
+	err = render.HTML(w, http.StatusOK, string(time.Now().UnixNano())+".tmpl", nil)
+	if err == nil {
+		t.Errorf("expected error, got nil")
 	}
 }
 

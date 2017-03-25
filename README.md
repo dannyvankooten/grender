@@ -50,11 +50,11 @@ Grender comes with a variety of configuration options. The defaults are listed b
 
 ```go
 r := grender.New(grender.Options{
-    Debug: false,
-    TemplatesGlob: "",
-    PartialsGlob: "",
-    Funcs: nil,
-    Charset: "UTF-8",
+    Debug: false,       // If true, templates will be recompiled before each render call
+    TemplatesGlob: "",  // Glob to your template files
+    PartialsGlob: "",   // Glob to your patials or global templates
+    Funcs: nil,         // Your template FuncMap
+    Charset: "UTF-8",   // Charset to use for Content-Type header values
 })
 ```
 

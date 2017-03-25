@@ -60,7 +60,15 @@ func init() {
 }
 
 // New creates a new Renderer with the given options
-func New(opts Options) *Grender {
+func New(optsarg ...Options) *Grender {
+	var opts Options
+
+	if len(optsarg) > 0 {
+		opts = optsarg[0]
+	} else {
+		opts = Options{}
+	}
+
 	if opts.Charset == "" {
 		opts.Charset = "UTF-8"
 	}

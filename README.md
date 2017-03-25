@@ -49,8 +49,8 @@ Grender comes with a variety of configuration options. The defaults are listed b
 ```go
 r := grender.New(grender.Options{
     Debug: false,
-    TemplatesGlob: "templates/*.tmpl",
-    PartialsGlob: "templates/partials/*.tmpl",
+    TemplatesGlob: "",
+    PartialsGlob: "",
     Funcs: nil,
     Charset: "UTF-8",
 })

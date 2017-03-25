@@ -9,8 +9,10 @@ Grender is a package that provides functionality for easily rendering HTML templ
 ## Usage
 Grender can be used with pretty much any web framework providing you can access the `http.ResponseWriter` from your handler. The rendering functions simply wraps Go's existing functionality for marshaling and rendering data.
 
-- HTML: Uses the [html/template](http://golang.org/pkg/html/template/) package to render HTML templates.
-- JSON: Uses the [encoding/json](http://golang.org/pkg/encoding/json/) package to marshal data into a JSON-encoded response.
+- HTML: Uses the [html/template](https://golang.org/pkg/html/template/) package to render HTML templates.
+- JSON: Uses the [encoding/json](https://golang.org/pkg/encoding/json/) package to marshal data into a JSON-encoded response.
+- XML: Uses the [encoding/xml](https://golang.org/pkg/encoding/xml/) package to marshal data into an XML-encoded response.
+- Text: Passes the incoming string straight through to the `http.ResponseWriter`.
 
 ```go
 // main.go

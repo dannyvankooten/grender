@@ -74,7 +74,7 @@ func New(opts Options) *Grender {
 }
 
 // HTML executes the template and writes to the responsewriter
-func (r *Grender) HTML(w http.ResponseWriter, statusCode int, templateName string, data map[string]interface{}) error {
+func (r *Grender) HTML(w http.ResponseWriter, statusCode int, templateName string, data interface{}) error {
 	// re-compile on every render call when Debug is true
 	if r.options.Debug {
 		r.compileTemplatesFromDir()

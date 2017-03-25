@@ -58,6 +58,25 @@ r := grender.New(grender.Options{
 })
 ```
 
+### Extending another template
+
+First, define your parent template like this.
+
+```go
+// master.tmpl
+<html>
+  {{template "content" .}}
+</html>
+```
+
+// Then, in a separate template file use a template comment to indicate that you want to extend the other template file.
+```go
+// child.tmpl
+{{/* extends "master.tmpl" */}}
+
+{{define "content"}}Hello world!{{end}}
+```
+
 ### More examples
 
 The [grender_test.go](grender_test.go) file contains additional usage examples.

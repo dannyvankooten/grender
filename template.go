@@ -12,7 +12,8 @@ func (r *Grender) compileTemplatesFromDir() {
 		return
 	}
 
-	// replace existing templates
+	// replace existing templates.
+	// NOTE: this is unsafe, but Debug should really not be true in production environments.
 	r.templates = make(map[string]*template.Template)
 
 	files, err := filepath.Glob(r.options.TemplatesGlob)

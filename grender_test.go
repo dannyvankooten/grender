@@ -25,29 +25,25 @@ func TestRendererJSON(t *testing.T) {
 		Charset: "ASCII",
 	})
 
-	var err error
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err = render.JSON(w, 299, Greeting{"hello", "world"})
-	})
-
-	res := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/foo", nil)
-	h.ServeHTTP(res, req)
+	w := httptest.NewRecorder()
+	err := render.JSON(w, 299, Greeting{"hello", "world"})
+	res := w.Result()
 
 	if err != nil {
 		t.Errorf("expected %#v, got %#v", nil, err)
 	}
 
-	if res.Code != 299 {
-		t.Errorf("invalid status code: expected %#v, got %#v", 299, res.Code)
+	if res.StatusCode != 299 {
+		t.Errorf("invalid status code: expected %#v, got %#v", 299, res.StatusCode)
 	}
 
 	e := ContentJSON + "; charset=" + render.options.Charset
-	if v := res.Header().Get(ContentType); v != e {
+	if v := res.Header.Get(ContentType); v != e {
 		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
 	}
 
-	if v := res.Body.String(); v != "{\"one\":\"hello\",\"two\":\"world\"}\n" {
+	body, _ := ioutil.ReadAll(res.Body)
+	if v := string(body); v != "{\"one\":\"hello\",\"two\":\"world\"}\n" {
 		t.Errorf("invalid response body: expected %#v, got %#v", "{\"one\":\"hello\",\"two\":\"world\"}\n", v)
 	}
 }
@@ -57,29 +53,24 @@ func TestRendererHTML(t *testing.T) {
 		TemplatesGlob: "examples/*.tmpl",
 	})
 
-	var err error
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err = render.HTML(w, http.StatusOK, "hello.tmpl", "world")
-	})
-
-	res := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/foo", nil)
-	h.ServeHTTP(res, req)
-
+	w := httptest.NewRecorder()
+	err := render.HTML(w, http.StatusOK, "hello.tmpl", "world")
+	res := w.Result()
 	if err != nil {
 		t.Errorf("expected %#v, got %#v", nil, err)
 	}
 
-	if res.Code != http.StatusOK {
-		t.Errorf("invalid status code: expected %#v, got %#v", http.StatusOK, res.Code)
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("invalid status code: expected %#v, got %#v", http.StatusOK, res.StatusCode)
 	}
 
 	e := ContentHTML + "; charset=" + render.options.Charset
-	if v := res.Header().Get(ContentType); v != e {
+	if v := res.Header.Get(ContentType); v != e {
 		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
 	}
 
-	if v := res.Body.String(); v != "Hello world!\n" {
+	body, _ := ioutil.ReadAll(res.Body)
+	if v := string(body); v != "Hello world!\n" {
 		t.Errorf("invalid body: expected %#v, got %#v", "Hello world!\n", v)
 	}
 }

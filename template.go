@@ -8,15 +8,15 @@ import (
 )
 
 func (r *Grender) compileTemplatesFromDir() {
-	if r.options.TemplatesGlob == "" {
+	if r.Options.TemplatesGlob == "" {
 		return
 	}
 
 	// replace existing templates.
 	// NOTE: this is unsafe, but Debug should really not be true in production environments.
-	r.templates = make(map[string]*template.Template)
+	r.Templates.set = make(map[string]*template.Template)
 
-	files, err := filepath.Glob(r.options.TemplatesGlob)
+	files, err := filepath.Glob(r.Options.TemplatesGlob)
 	if err != nil {
 		panic(err)
 	}
@@ -31,11 +31,11 @@ func (r *Grender) compileTemplatesFromDir() {
 			name = filepath.Base(layout)
 		}
 
-		tmpl := template.New(name).Funcs(r.options.Funcs)
+		tmpl := template.New(name).Funcs(r.Options.Funcs)
 
 		// parse partials (glob)
-		if r.options.PartialsGlob != "" {
-			tmpl = template.Must(tmpl.ParseGlob(r.options.PartialsGlob))
+		if r.Options.PartialsGlob != "" {
+			tmpl = template.Must(tmpl.ParseGlob(r.Options.PartialsGlob))
 		}
 
 		// parse master template
@@ -47,8 +47,13 @@ func (r *Grender) compileTemplatesFromDir() {
 		// parse child template
 		tmpl = template.Must(tmpl.ParseFiles(templateFile))
 
-		r.templates[fileName] = tmpl
+		r.Templates.set[fileName] = tmpl
 	}
+}
+
+// Lookup returns the compiled template by its filename or nil if there is no such template
+func (t *templates) Lookup(name string) *template.Template {
+	return t.set[name]
 }
 
 // getLayoutForTemplate scans the template file for the extends keyword

@@ -15,8 +15,8 @@ type Greeting struct {
 func TestGrenderDefaultCharset(t *testing.T) {
 	r := New(Options{})
 
-	if r.options.Charset != DefaultCharset {
-		t.Errorf("invalid default charset: expected %#v, got %#v", DefaultCharset, r.options.Charset)
+	if r.Options.Charset != DefaultCharset {
+		t.Errorf("invalid default charset: expected %#v, got %#v", DefaultCharset, r.Options.Charset)
 	}
 }
 
@@ -37,7 +37,7 @@ func TestGrenderJSON(t *testing.T) {
 		t.Errorf("invalid status code: expected %#v, got %#v", 299, res.StatusCode)
 	}
 
-	e := ContentJSON + "; charset=" + render.options.Charset
+	e := ContentJSON + "; charset=" + render.Options.Charset
 	if v := res.Header.Get(ContentType); v != e {
 		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
 	}
@@ -64,7 +64,7 @@ func TestGrenderHTML(t *testing.T) {
 		t.Errorf("invalid status code: expected %#v, got %#v", http.StatusOK, res.StatusCode)
 	}
 
-	e := ContentHTML + "; charset=" + render.options.Charset
+	e := ContentHTML + "; charset=" + render.Options.Charset
 	if v := res.Header.Get(ContentType); v != e {
 		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
 	}
@@ -90,7 +90,7 @@ func TestGrenderXML(t *testing.T) {
 		t.Errorf("invalid status code: expected %#v, got %#v", 299, res.StatusCode)
 	}
 
-	e := ContentXML + "; charset=" + render.options.Charset
+	e := ContentXML + "; charset=" + render.Options.Charset
 	if v := res.Header.Get(ContentType); v != e {
 		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
 	}
@@ -117,7 +117,7 @@ func TestGrenderText(t *testing.T) {
 		t.Errorf("invalid status code: expected %#v, got %#v", 200, res.StatusCode)
 	}
 
-	e := ContentText + "; charset=" + render.options.Charset
+	e := ContentText + "; charset=" + render.Options.Charset
 	if v := res.Header.Get(ContentType); v != e {
 		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
 	}

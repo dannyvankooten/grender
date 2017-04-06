@@ -14,7 +14,7 @@ func (r *Grender) compileTemplatesFromDir() {
 
 	// replace existing templates.
 	// NOTE: this is unsafe, but Debug should really not be true in production environments.
-	r.Templates.set = make(map[string]*template.Template)
+	templateSet := make(map[string]*template.Template)
 
 	files, err := filepath.Glob(r.Options.TemplatesGlob)
 	if err != nil {
@@ -47,8 +47,10 @@ func (r *Grender) compileTemplatesFromDir() {
 		// parse child template
 		tmpl = template.Must(tmpl.ParseFiles(templateFile))
 
-		r.Templates.set[fileName] = tmpl
+		templateSet[fileName] = tmpl
 	}
+
+	r.Templates.set = templateSet
 }
 
 // Lookup returns the compiled template by its filename or nil if there is no such template

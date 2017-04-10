@@ -21,6 +21,13 @@ func (r *Grender) compileTemplatesFromDir() {
 		panic(err)
 	}
 
+	baseTmpl := template.New("").Funcs(r.Options.Funcs)
+
+	// parse partials (glob)
+	if r.Options.PartialsGlob != "" {
+		baseTmpl = template.Must(baseTmpl.ParseGlob(r.Options.PartialsGlob))
+	}
+
 	for _, templateFile := range files {
 		fileName := filepath.Base(templateFile)
 		layout := getLayoutForTemplate(templateFile)
@@ -31,12 +38,8 @@ func (r *Grender) compileTemplatesFromDir() {
 			name = filepath.Base(layout)
 		}
 
-		tmpl := template.New(name).Funcs(r.Options.Funcs)
-
-		// parse partials (glob)
-		if r.Options.PartialsGlob != "" {
-			tmpl = template.Must(tmpl.ParseGlob(r.Options.PartialsGlob))
-		}
+		tmpl := template.Must(baseTmpl.Clone())
+		tmpl = tmpl.New(name)
 
 		// parse master template
 		if layout != "" {

@@ -5,10 +5,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
-	"regexp"
 )
-
-var extendsRegex *regexp.Regexp
 
 func init() {
 	var err error
@@ -17,6 +14,7 @@ func init() {
 		panic(err)
 	}
 }
+
 
 func (r *Grender) compileTemplatesFromDir() {
 	if r.Options.TemplatesGlob == "" {
@@ -72,7 +70,7 @@ func (t *templates) Lookup(name string) *template.Template {
 	return t.set[name]
 }
 
-// getLayoutForTemplate scans the first line of the template file for the extends keyword
+// getLayoutForTemplate scans the template file for the extends keyword
 func getLayoutForTemplate(filename string) string {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -81,10 +79,10 @@ func getLayoutForTemplate(filename string) string {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	scanner.Scan()
-	b := scanner.Bytes()
-	if l := extendsRegex.FindSubmatch(b); l != nil {
-		return string(l[1])
+	for scanner.Scan() {
+		if l := extendsRegex.FindSubmatch(scanner.Bytes()); l != nil {
+			return string(l[1])
+		}
 	}
 
 	return ""

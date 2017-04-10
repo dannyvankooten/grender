@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"regexp"
 )
 
 const (
@@ -28,8 +27,6 @@ const (
 	// DefaultCharset for when no specific Charset Options was given
 	DefaultCharset = "UTF-8"
 )
-
-var extendsRegex *regexp.Regexp
 
 type templates struct {
 	set map[string]*template.Template
@@ -57,14 +54,6 @@ type Options struct {
 
 	// Charset for responses
 	Charset string
-}
-
-func init() {
-	var err error
-	extendsRegex, err = regexp.Compile(`{{\/\*\s+extends\s+"(.*)"\s+\*\/}}`)
-	if err != nil {
-		panic(err)
-	}
 }
 
 // New creates a new Renderer with the given Options

@@ -2,9 +2,9 @@
 
 Grender is a package that provides functionality for easily rendering HTML templates and JSON or XML data to a HTTP response. It is based on [github.com/unrolled/render](https://github.com/unrolled/render) with some subtle modifications when it comes to rendering HTML templates.
 
-- Templates can extend other templates using a template comment: `{{/* extends "master.tmpl" */}}`
-- Configure template files using a glob string: `templates/*.tmpl`
-- Support for partials as normal templates: `{{ template "footer" .}}`
+- Templates inheritance: `{{/* extends "master.tmpl" */}}`
+- Glob configuration: `templates/*.tmpl`
+- Normal templates as partials: `{{ template "footer" .}}`
 
 ## Usage
 Grender can be used with pretty much any web framework providing you can access the `http.ResponseWriter` from your handler. The rendering functions simply wraps Go's existing functionality for marshaling and rendering data.
@@ -62,16 +62,17 @@ r := grender.New(grender.Options{
 
 First, define your parent template like this.
 
+file: _master.tmpl_
 ```go
-// master.tmpl
 <html>
   {{template "content" .}}
 </html>
 ```
 
-// Then, in a separate template file use a template comment to indicate that you want to extend the other template file.
+Then, in a separate template file use a template comment on the first line to indicate that you want to extend the other template file.
+
+file: _child.tmpl_
 ```go
-// child.tmpl
 {{/* extends "master.tmpl" */}}
 
 {{define "content"}}Hello world!{{end}}

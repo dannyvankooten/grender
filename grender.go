@@ -109,13 +109,13 @@ func (r *Grender) HTML(w http.ResponseWriter, statusCode int, templateName strin
 // JSON renders the data as a JSON HTTP response to the ResponseWriter
 func (r *Grender) JSON(w http.ResponseWriter, statusCode int, data interface{}) error {
 	w.Header().Set("Content-Type", ContentJSON+"; charset="+r.Options.Charset)
+	w.WriteHeader(statusCode)
 
 	// do nothing if nil data
 	if data == nil {
 		return nil
 	}
 
-	w.WriteHeader(statusCode)
 	err := json.NewEncoder(w).Encode(data)
 	return err
 }
@@ -123,13 +123,13 @@ func (r *Grender) JSON(w http.ResponseWriter, statusCode int, data interface{}) 
 // XML writes the data as a XML HTTP response to the ResponseWriter
 func (r *Grender) XML(w http.ResponseWriter, statusCode int, data interface{}) error {
 	w.Header().Set("Content-Type", ContentXML+"; charset="+r.Options.Charset)
+	w.WriteHeader(statusCode)
 
 	// do nothing if nil data
 	if data == nil {
 		return nil
 	}
 
-	w.WriteHeader(statusCode)
 	err := xml.NewEncoder(w).Encode(data)
 	return err
 }

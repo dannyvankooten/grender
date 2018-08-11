@@ -12,7 +12,7 @@ var extendsRegex *regexp.Regexp
 
 func init() {
 	var err error
-	extendsRegex, err = regexp.Compile(`{{\/\*\s+extends\s+"(.*)"\s+\*\/}}`)
+	extendsRegex, err = regexp.Compile(`\{\{\/\* *?extends +?"(.+?)" *?\*\/\}\}`)
 	if err != nil {
 		panic(err)
 	}
